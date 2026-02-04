@@ -44,12 +44,30 @@ You can still force it explicitly:
 TEST_PLATFORM=linux/amd64 ./scripts/smoke-test.sh runpod-verl:dev
 ```
 
-## GitHub Actions + GHCR
+## GitHub Actions (CI)
 
-Workflow: `.github/workflows/build-image.yml`
+Workflow: `.github/workflows/build-image.yml` (lightweight validation only)
 
-- Pull requests: build + smoke test only.
-- `main` and tags: build + smoke test + push to `ghcr.io/<owner>/runpod-verl`.
+- Pull requests and `main`: script/file validation checks.
+
+## Publish image to GHCR (local)
+
+Use the publish script:
+
+```bash
+./scripts/publish-ghcr.sh
+```
+
+Optional overrides:
+
+```bash
+IMAGE_REPO=ghcr.io/xqark/runpod-verl \
+IMAGE_TAG=main \
+EXTRA_TAG=latest \
+GITHUB_USER=Xqark \
+VERL_PIP_SPEC='verl' \
+./scripts/publish-ghcr.sh
+```
 
 ## Runpod template settings
 
