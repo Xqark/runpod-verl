@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+log() {
+  printf '[entrypoint] %s\n' "$*"
+}
+
+ensure_group() {
+  local group_name="$1"
+  local group_id="$2"
+
+  if getent group "${group_name}" >/dev/null 2>&1; then
+    return
+  fi
+
+  if getent group "${group_id}" >/dev/null 2>&1; then
+    group_name="$(getent group "${group_id}" | cut -d: -f1)"
+    log "Reusing existing group ${group_name} for gid ${group_id}"
+    return
+  fi
+
+  groupadd --gid "${group_id}" "${group_name}"
+}
+
+ensure_user() {
+  local user_name="$1"
+  local user_id="$2"
+  local group_name="$3"
+
+  if id -u "${user_name}" >/dev/null 2>&1; then
+    return
+  fi
+
+  if getent passwd "${user_id}" >/dev/null 2>&1; then
+    user_name="$(getent passwd "${user_id}" | cut -d: -f1)"
+    log "Reusing existing user ${user_name} for uid ${user_id}"
+    return
+  fi
+
+  useradd --uid "${user_id}" --gid "${group_name}" --create-home --shell /bin/bash "${user_name}"
+}
+
+main() {
+  local ssh_user="${SSH_USER:-poduser}"
+  local ssh_uid="${SSH_UID:-1000}"
+  local ssh_gid="${SSH_GID:-1000}"
+  local ssh_port="${SSH_PORT:-22}"
+  local require_key="${REQUIRE_SSH_KEY:-true}"
+  local keys="${SSH_AUTHORIZED_KEYS:-${SSH_PUBLIC_KEY:-${RUNPOD_PUBLIC_KEY:-${PUBLIC_KEY:-}}}}"
+
+  ensure_group "${ssh_user}" "${ssh_gid}"
+  ensure_user "${ssh_user}" "${ssh_uid}" "${ssh_user}"
+
+  local home_dir
+  home_dir="$(getent passwd "${ssh_user}" | cut -d: -f6)"
+  local ssh_dir="${home_dir}/.ssh"
+  local auth_keys_file="${ssh_dir}/authorized_keys"
+
+  mkdir -p "${ssh_dir}" /run/sshd
+  chmod 700 "${ssh_dir}"
+
+  if [[ -n "${keys}" ]]; then
+    printf '%s\n' "${keys}" > "${auth_keys_file}"
+    chmod 600 "${auth_keys_file}"
+    chown -R "${ssh_user}:${ssh_user}" "${ssh_dir}"
+  elif [[ "${require_key}" == "true" ]]; then
+    log "No SSH key found in SSH_AUTHORIZED_KEYS/SSH_PUBLIC_KEY/RUNPOD_PUBLIC_KEY/PUBLIC_KEY."
+    log "Set REQUIRE_SSH_KEY=false only for debugging and non-production use."
+    exit 1
+  else
+    log "Starting without SSH keys because REQUIRE_SSH_KEY=false"
+    touch "${auth_keys_file}"
+    chmod 600 "${auth_keys_file}"
+    chown -R "${ssh_user}:${ssh_user}" "${ssh_dir}"
+  fi
+
+  ssh-keygen -A
+  sed \
+    -e "s/__SSH_PORT__/${ssh_port}/g" \
+    -e "s/__SSH_USER__/${ssh_user}/g" \
+    /etc/ssh/templates/sshd_config.template > /etc/ssh/sshd_config
+  /usr/sbin/sshd -e
+  log "sshd started on port ${ssh_port} for user ${ssh_user}"
+
+  if [[ "$#" -eq 0 ]]; then
+    log "No command provided; keeping container alive."
+    exec sleep infinity
+  fi
+
+  exec "$@"
+}
+
+main "$@"

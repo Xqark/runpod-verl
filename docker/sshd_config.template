@@ -1,0 +1,31 @@
+Port __SSH_PORT__
+Protocol 2
+AddressFamily any
+ListenAddress 0.0.0.0
+
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+ChallengeResponseAuthentication no
+UsePAM yes
+PermitEmptyPasswords no
+
+X11Forwarding no
+AllowTcpForwarding yes
+AllowAgentForwarding yes
+AllowStreamLocalForwarding yes
+ClientAliveInterval 300
+ClientAliveCountMax 2
+LoginGraceTime 30
+MaxAuthTries 3
+AllowUsers __SSH_USER__
+
+AuthorizedKeysFile .ssh/authorized_keys
+Subsystem sftp internal-sftp
+PidFile /run/sshd.pid
+PrintMotd no
