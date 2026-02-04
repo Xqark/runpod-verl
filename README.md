@@ -69,6 +69,12 @@ VERL_PIP_SPEC='verl' \
 ./scripts/publish-ghcr.sh
 ```
 
+If you already built locally and only need to push:
+
+```bash
+SKIP_BUILD=true SKIP_SMOKE=true ./scripts/publish-ghcr.sh
+```
+
 ## Runpod template settings
 
 Use your pushed image, then set:
