@@ -53,6 +53,14 @@ main() {
 
   local home_dir
   home_dir="$(getent passwd "${ssh_user}" | cut -d: -f6)"
+  if [[ -z "${home_dir}" || "${home_dir}" == "/" ]]; then
+    log "Refusing to use unsafe home directory for ${ssh_user}: '${home_dir}'"
+    exit 1
+  fi
+  mkdir -p "${home_dir}"
+  chown "${ssh_user}:${ssh_user}" "${home_dir}"
+  chmod 755 "${home_dir}"
+
   local ssh_dir="${home_dir}/.ssh"
   local auth_keys_file="${ssh_dir}/authorized_keys"
 
