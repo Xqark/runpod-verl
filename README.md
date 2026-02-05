@@ -50,34 +50,32 @@ Workflow: `.github/workflows/build-image.yml` (lightweight validation only)
 
 - Pull requests and `main`: script/file validation checks.
 
-## Publish image to GHCR (local)
+## Publish image to Docker Hub (local)
 
 Use the publish script:
 
 ```bash
-./scripts/publish-ghcr.sh
+./scripts/publish-image.sh
 ```
 
 Optional overrides:
 
 ```bash
-IMAGE_REPO=ghcr.io/xqark/runpod-verl \
-IMAGE_TAG=main \
-EXTRA_TAG=latest \
-GITHUB_USER=Xqark \
+IMAGE_REPO=docker.io/sparkkkkk/runpod-verl \
+IMAGE_TAG=latest \
 VERL_PIP_SPEC='verl' \
-./scripts/publish-ghcr.sh
+./scripts/publish-image.sh
 ```
 
 If you already built locally and only need to push:
 
 ```bash
-SKIP_BUILD=true SKIP_SMOKE=true ./scripts/publish-ghcr.sh
+SKIP_BUILD=true SKIP_SMOKE=true ./scripts/publish-image.sh
 ```
 
 ## Runpod template settings
 
-Use your pushed image, then set:
+Use your pushed image (for now `docker.io/sparkkkkk/runpod-verl:latest`), then set:
 
 - Exposed TCP ports: `22`
 - Container disk and GPU as needed for training
