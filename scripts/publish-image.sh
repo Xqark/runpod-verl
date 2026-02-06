@@ -4,7 +4,7 @@ set -euo pipefail
 IMAGE_REPO="${IMAGE_REPO:-docker.io/sparkkkkk/runpod-verl}"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
 EXTRA_TAG="${EXTRA_TAG:-}"
-VERL_BASE_IMAGE="${VERL_BASE_IMAGE:-verlai/verl:base-verl0.4-cu124-cudnn9.8-torch2.6-fa2.7.4}"
+VERL_BASE_IMAGE="${VERL_BASE_IMAGE:-verlai/verl:vllm012.latest}"
 VERL_PIP_SPEC="${VERL_PIP_SPEC:-verl}"
 SKIP_BUILD="${SKIP_BUILD:-false}"
 SKIP_SMOKE="${SKIP_SMOKE:-false}"
