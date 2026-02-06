@@ -19,6 +19,9 @@ Provide your public key via environment variables:
 - `RUNPOD_PUBLIC_KEY`
 - `PUBLIC_KEY`
 
+You only need to set one. If multiple are set, the precedence is:
+`SSH_AUTHORIZED_KEYS` → `SSH_PUBLIC_KEY` → `RUNPOD_PUBLIC_KEY` → `PUBLIC_KEY`.
+
 ## Optional passwords (not required for SSH)
 
 If you want to set local passwords for `sudo`/`su` inside the container, provide:

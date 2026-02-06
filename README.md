@@ -17,6 +17,9 @@ Custom Runpod image wrapper for veRL with secure SSH enabled at container startu
 - `SSH_PUBLIC_KEY`: Single public key fallback.
 - `RUNPOD_PUBLIC_KEY`: Runpod-style fallback.
 - `PUBLIC_KEY`: Generic fallback.
+
+Note: these are **alternative inputs**. You only need to provide one of them. If multiple are set, the image uses this precedence:
+`SSH_AUTHORIZED_KEYS` → `SSH_PUBLIC_KEY` → `RUNPOD_PUBLIC_KEY` → `PUBLIC_KEY`.
 - `SSH_USER` (default: `poduser`)
 - `SSH_UID` (default: `1000`)
 - `SSH_GID` (default: `1000`)
