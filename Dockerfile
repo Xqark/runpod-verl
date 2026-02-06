@@ -27,7 +27,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g @openai/codex @opencode-ai/cli
+RUN npm config delete //registry.npmjs.org/:_authToken || true && \
+    npm config set registry https://registry.npmjs.org/ && \
+    npm install -g @openai/codex opencode-ai
 
 RUN python -m pip install --no-cache-dir --upgrade pip && \
     python -m pip install --no-cache-dir "${VERL_PIP_SPEC}"
