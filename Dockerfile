@@ -1,4 +1,4 @@
-ARG VERL_BASE_IMAGE=verlai/verl:base-verl0.4-cu124-cudnn9.8-torch2.6-fa2.7.4
+ARG VERL_BASE_IMAGE=verlai/verl:vllm012.latest
 FROM ${VERL_BASE_IMAGE}
 ARG VERL_PIP_SPEC=verl
 
