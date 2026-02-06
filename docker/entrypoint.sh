@@ -54,6 +54,8 @@ main() {
   local ssh_port="${SSH_PORT:-22}"
   local require_key="${REQUIRE_SSH_KEY:-true}"
   local keys="${SSH_AUTHORIZED_KEYS:-${SSH_PUBLIC_KEY:-${RUNPOD_PUBLIC_KEY:-${PUBLIC_KEY:-}}}}"
+  local root_password="${ROOT_PASSWORD:-}"
+  local ssh_password="${SSH_USER_PASSWORD:-}"
   local user_shell="/bin/bash"
 
   if command -v fish >/dev/null 2>&1; then
@@ -62,6 +64,16 @@ main() {
 
   ensure_group "${ssh_user}" "${ssh_gid}"
   ensure_user "${ssh_user}" "${ssh_uid}" "${ssh_user}" "${user_shell}"
+  if getent group sudo >/dev/null 2>&1; then
+    usermod -aG sudo "${ssh_user}" || true
+  fi
+
+  if [[ -n "${root_password}" ]]; then
+    printf 'root:%s\n' "${root_password}" | chpasswd
+  fi
+  if [[ -n "${ssh_password}" ]]; then
+    printf '%s:%s\n' "${ssh_user}" "${ssh_password}" | chpasswd
+  fi
 
   local home_dir
   home_dir="$(getent passwd "${ssh_user}" | cut -d: -f6)"

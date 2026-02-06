@@ -4,12 +4,12 @@ Custom Runpod image wrapper for veRL with secure SSH enabled at container startu
 
 ## What this adds on top of the official veRL image
 
-- Starts from the official veRL image (`VERL_BASE_IMAGE`, default `verlai/verl:base-verl0.4-cu124-cudnn9.8-torch2.6-fa2.7.4`).
+- Starts from the official veRL image (`VERL_BASE_IMAGE`, default `verlai/verl:vllm012.latest`).
 - Installs and runs OpenSSH server.
 - Creates/uses a non-root SSH user (`poduser` by default).
 - Enforces key-based SSH auth by default.
 - Keeps upstream `CMD` behavior by using an entrypoint wrapper.
-- Installs `fish`, `tmux`, Codex CLI, and OpenCode CLI.
+- Installs `fish`, `tmux`, `git-lfs`, `sudo`, Codex CLI, and OpenCode CLI.
 
 ## Environment variables
 
@@ -22,13 +22,15 @@ Custom Runpod image wrapper for veRL with secure SSH enabled at container startu
 - `SSH_GID` (default: `1000`)
 - `SSH_PORT` (default: `22`)
 - `REQUIRE_SSH_KEY` (default: `true`)
+- `ROOT_PASSWORD` (optional; if set, initializes root password)
+- `SSH_USER_PASSWORD` (optional; if set, initializes SSH user password)
 - `VERL_PIP_SPEC` build arg (default: `verl`, can be pinned like `verl==0.7.0`)
 
 ## Local build
 
 ```bash
 docker build -t runpod-verl:dev \
-  --build-arg VERL_BASE_IMAGE=verlai/verl:base-verl0.4-cu124-cudnn9.8-torch2.6-fa2.7.4 \
+  --build-arg VERL_BASE_IMAGE=verlai/verl:vllm012.latest \
   --build-arg VERL_PIP_SPEC='verl' .
 ```
 
@@ -88,3 +90,4 @@ Use your pushed image (for now `docker.io/sparkkkkk/runpod-verl:latest`), then s
 - Root SSH login disabled.
 - Password SSH auth disabled.
 - Public-key auth required unless `REQUIRE_SSH_KEY=false` (not recommended).
+- Root/SSH user passwords are not set unless you provide `ROOT_PASSWORD` / `SSH_USER_PASSWORD`.
