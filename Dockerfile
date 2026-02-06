@@ -12,11 +12,22 @@ ENV DEBIAN_FRONTEND=noninteractive \
     REQUIRE_SSH_KEY=true
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openssh-server \
     ca-certificates \
+    curl \
+    gnupg \
+    openssh-server \
     tini \
     gosu \
+    fish \
+    tmux \
     && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get update && apt-get install -y --no-install-recommends \
+    nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g @openai/codex @opencode-ai/cli
 
 RUN python -m pip install --no-cache-dir --upgrade pip && \
     python -m pip install --no-cache-dir "${VERL_PIP_SPEC}"
@@ -26,6 +37,9 @@ RUN mkdir -p /run/sshd /etc/ssh/templates
 COPY docker/sshd_config.template /etc/ssh/templates/sshd_config.template
 COPY docker/entrypoint.sh /opt/runpod/entrypoint.sh
 RUN chmod +x /opt/runpod/entrypoint.sh
+
+COPY .tmux.conf /etc/skel/.tmux.conf
+RUN cp /etc/skel/.tmux.conf /root/.tmux.conf
 
 EXPOSE 22
 

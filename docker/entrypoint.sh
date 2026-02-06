@@ -26,18 +26,25 @@ ensure_user() {
   local user_name="$1"
   local user_id="$2"
   local group_name="$3"
+  local user_shell="$4"
 
   if id -u "${user_name}" >/dev/null 2>&1; then
+    if [[ -n "${user_shell}" ]]; then
+      usermod -s "${user_shell}" "${user_name}" || true
+    fi
     return
   fi
 
   if getent passwd "${user_id}" >/dev/null 2>&1; then
     user_name="$(getent passwd "${user_id}" | cut -d: -f1)"
     log "Reusing existing user ${user_name} for uid ${user_id}"
+    if [[ -n "${user_shell}" ]]; then
+      usermod -s "${user_shell}" "${user_name}" || true
+    fi
     return
   fi
 
-  useradd --uid "${user_id}" --gid "${group_name}" --create-home --shell /bin/bash "${user_name}"
+  useradd --uid "${user_id}" --gid "${group_name}" --create-home --shell "${user_shell:-/bin/bash}" "${user_name}"
 }
 
 main() {
@@ -47,9 +54,14 @@ main() {
   local ssh_port="${SSH_PORT:-22}"
   local require_key="${REQUIRE_SSH_KEY:-true}"
   local keys="${SSH_AUTHORIZED_KEYS:-${SSH_PUBLIC_KEY:-${RUNPOD_PUBLIC_KEY:-${PUBLIC_KEY:-}}}}"
+  local user_shell="/bin/bash"
+
+  if command -v fish >/dev/null 2>&1; then
+    user_shell="$(command -v fish)"
+  fi
 
   ensure_group "${ssh_user}" "${ssh_gid}"
-  ensure_user "${ssh_user}" "${ssh_uid}" "${ssh_user}"
+  ensure_user "${ssh_user}" "${ssh_uid}" "${ssh_user}" "${user_shell}"
 
   local home_dir
   home_dir="$(getent passwd "${ssh_user}" | cut -d: -f6)"
@@ -60,6 +72,10 @@ main() {
   mkdir -p "${home_dir}"
   chown "${ssh_user}:${ssh_user}" "${home_dir}"
   chmod 755 "${home_dir}"
+  if [[ -f /etc/skel/.tmux.conf && ! -f "${home_dir}/.tmux.conf" ]]; then
+    cp /etc/skel/.tmux.conf "${home_dir}/.tmux.conf"
+    chown "${ssh_user}:${ssh_user}" "${home_dir}/.tmux.conf"
+  fi
 
   local ssh_dir="${home_dir}/.ssh"
   local auth_keys_file="${ssh_dir}/authorized_keys"
