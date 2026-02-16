@@ -4,7 +4,7 @@ Custom Runpod image wrapper for veRL with secure SSH enabled at container startu
 
 ## What this adds on top of the official veRL image
 
-- Starts from the official veRL image (`VERL_BASE_IMAGE`, default `verlai/verl:vllm012.latest`).
+- Starts from the official veRL image (`VERL_BASE_IMAGE`, default `verlai/verl:app-verl0.5-vllm0.10.0-mcore0.13.0-te2.2`).
 - Installs and runs OpenSSH server.
 - Creates/uses a non-root SSH user (`poduser` by default).
 - Enforces key-based SSH auth by default.
@@ -33,7 +33,7 @@ Note: these are **alternative inputs**. You only need to provide one of them. If
 
 ```bash
 docker build -t runpod-verl:dev \
-  --build-arg VERL_BASE_IMAGE=verlai/verl:vllm012.latest \
+  --build-arg VERL_BASE_IMAGE=verlai/verl:app-verl0.5-vllm0.10.0-mcore0.13.0-te2.2 \
   --build-arg VERL_PIP_SPEC='verl' .
 ```
 
