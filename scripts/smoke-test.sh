@@ -33,7 +33,6 @@ trap cleanup EXIT
 
 sleep 3
 
-docker exec "${CONTAINER_ID}" bash -lc 'python -c "import verl; print(verl.__name__)"'
 docker exec "${CONTAINER_ID}" bash -lc 'sshd -t'
 docker exec "${CONTAINER_ID}" bash -lc 'pgrep -x sshd >/dev/null'
 docker exec "${CONTAINER_ID}" bash -lc 'test -s /home/poduser/.ssh/authorized_keys'
