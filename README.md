@@ -24,17 +24,15 @@ Note: these are **alternative inputs**. You only need to provide one of them. If
 - `SSH_UID` (default: `1000`)
 - `SSH_GID` (default: `1000`)
 - `SSH_PORT` (default: `22`)
-- `REQUIRE_SSH_KEY` (default: `true`)
+- `REQUIRE_SSH_KEY` (default: `true`, enforced in entrypoint)
 - `ROOT_PASSWORD` (optional; if set, initializes root password)
 - `SSH_USER_PASSWORD` (optional; if set, initializes SSH user password)
-- `VERL_PIP_SPEC` build arg (default: `verl`, can be pinned like `verl==0.7.0`)
 
 ## Local build
 
 ```bash
 docker build -t runpod-verl:dev \
-  --build-arg VERL_BASE_IMAGE=verlai/verl:app-verl0.5-vllm0.10.0-mcore0.13.0-te2.2 \
-  --build-arg VERL_PIP_SPEC='verl' .
+  --build-arg VERL_BASE_IMAGE=verlai/verl:app-verl0.5-vllm0.10.0-mcore0.13.0-te2.2 .
 ```
 
 ## Local smoke test
@@ -69,7 +67,6 @@ Optional overrides:
 ```bash
 IMAGE_REPO=docker.io/sparkkkkk/runpod-verl \
 IMAGE_TAG=latest \
-VERL_PIP_SPEC='verl' \
 ./scripts/publish-image.sh
 ```
 

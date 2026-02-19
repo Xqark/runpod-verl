@@ -5,7 +5,6 @@ IMAGE_REPO="${IMAGE_REPO:-docker.io/sparkkkkk/runpod-verl}"
 IMAGE_TAG="${IMAGE_TAG:-latest}"
 EXTRA_TAG="${EXTRA_TAG:-}"
 VERL_BASE_IMAGE="${VERL_BASE_IMAGE:-verlai/verl:app-verl0.5-vllm0.10.0-mcore0.13.0-te2.2}"
-VERL_PIP_SPEC="${VERL_PIP_SPEC:-verl}"
 SKIP_BUILD="${SKIP_BUILD:-false}"
 SKIP_SMOKE="${SKIP_SMOKE:-false}"
 
@@ -14,7 +13,6 @@ if [[ "${SKIP_BUILD}" != "true" ]]; then
   docker build \
     --platform linux/amd64 \
     --build-arg VERL_BASE_IMAGE="${VERL_BASE_IMAGE}" \
-    --build-arg VERL_PIP_SPEC="${VERL_PIP_SPEC}" \
     -t "${IMAGE_REPO}:${IMAGE_TAG}" \
     .
 fi

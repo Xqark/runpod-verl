@@ -1,6 +1,5 @@
 ARG VERL_BASE_IMAGE=verlai/verl:app-verl0.5-vllm0.10.0-mcore0.13.0-te2.2
 FROM ${VERL_BASE_IMAGE}
-ARG VERL_PIP_SPEC=verl
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -8,8 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     SSH_PORT=22 \
     SSH_USER=poduser \
     SSH_UID=1000 \
-    SSH_GID=1000 \
-    REQUIRE_SSH_KEY=true
+    SSH_GID=1000
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -35,8 +33,7 @@ RUN npm config delete //registry.npmjs.org/:_authToken || true && \
 
 RUN git lfs install --system
 
-RUN python -m pip install --no-cache-dir --upgrade pip && \
-    python -m pip install --no-cache-dir "${VERL_PIP_SPEC}"
+RUN python -m pip install --no-cache-dir --upgrade pip
 
 RUN mkdir -p /run/sshd /etc/ssh/templates
 

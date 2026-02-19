@@ -24,7 +24,7 @@ CONTAINER_ID="$(docker run "${run_args[@]}" \
   -e SSH_AUTHORIZED_KEYS="${TEST_KEY}" \
   -e REQUIRE_SSH_KEY=true \
   "${IMAGE_REF}" \
-  bash -lc 'python -c "import verl; print(verl.__name__)" && sleep infinity')"
+  bash -lc 'sleep infinity')"
 
 cleanup() {
   docker rm -f "${CONTAINER_ID}" >/dev/null 2>&1 || true
@@ -33,6 +33,7 @@ trap cleanup EXIT
 
 sleep 3
 
+docker exec "${CONTAINER_ID}" bash -lc 'python -c "import verl; print(verl.__name__)"'
 docker exec "${CONTAINER_ID}" bash -lc 'sshd -t'
 docker exec "${CONTAINER_ID}" bash -lc 'pgrep -x sshd >/dev/null'
 docker exec "${CONTAINER_ID}" bash -lc 'test -s /home/poduser/.ssh/authorized_keys'
