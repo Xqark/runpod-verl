@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gosu \
     fish \
     tmux \
+    btop \
+    nvtop \
     git-lfs \
     sudo \
     && rm -rf /var/lib/apt/lists/*

@@ -9,7 +9,7 @@ Custom Runpod image wrapper for veRL with secure SSH enabled at container startu
 - Creates/uses a non-root SSH user (`poduser` by default).
 - Enforces key-based SSH auth by default.
 - Keeps upstream `CMD` behavior by using an entrypoint wrapper.
-- Installs `fish`, `tmux`, `git-lfs`, `sudo`, Codex CLI, and OpenCode CLI.
+- Installs `fish`, `tmux`, `btop`, `nvtop`, `git-lfs`, `sudo`, Codex CLI, and OpenCode CLI.
 
 ## Environment variables
 
