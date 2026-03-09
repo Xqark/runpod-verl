@@ -9,7 +9,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
     SSH_UID=1000 \
     SSH_GID=1000
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN sed -i 's|https://mirrors.tuna.tsinghua.edu.cn/ubuntu|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources 2>/dev/null || true && \
+    sed -i 's|http://mirrors.tuna.tsinghua.edu.cn/ubuntu|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources 2>/dev/null || true && \
+    apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
     gnupg \
