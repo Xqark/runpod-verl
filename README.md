@@ -1,6 +1,6 @@
 # runpod-verl
 
-Custom Runpod image wrapper for veRL with secure SSH enabled at container startup.
+Custom RunPod image wrapper for veRL with secure SSH enabled at container startup. The current image target is a generic, single-node NVIDIA RunPod environment for SDPO workspace usage with vLLM; it does not bake the SDPO repo into the image.
 
 ## What this adds on top of the official veRL image
 
@@ -9,7 +9,8 @@ Custom Runpod image wrapper for veRL with secure SSH enabled at container startu
 - Creates/uses a non-root SSH user (`poduser` by default).
 - Enforces key-based SSH auth by default.
 - Keeps upstream `CMD` behavior by using an entrypoint wrapper.
-- Installs `fish`, `tmux`, `btop`, `nvtop`, `git-lfs`, `sudo`, Codex CLI, and OpenCode CLI.
+- Installs `fish`, `tmux`, `btop`, `nvtop`, `git`, `git-lfs`, `wget`, `sudo`, and small SDPO-oriented runtime utilities.
+- Includes a workspace bootstrap helper for SDPO checkout/install: `bootstrap-sdpo.sh`.
 
 ## Environment variables
 
@@ -27,6 +28,37 @@ Note: these are **alternative inputs**. You only need to provide one of them. If
 - `REQUIRE_SSH_KEY` (default: `true`, enforced in entrypoint)
 - `ROOT_PASSWORD` (optional; if set, initializes root password)
 - `SSH_USER_PASSWORD` (optional; if set, initializes SSH user password)
+
+## SDPO workflow
+
+This image is intentionally generic. It is not expected to provide `import verl` or an installed SDPO checkout out of the box.
+
+The intended workflow on RunPod is:
+
+1. Start a Pod from this image and SSH in as `poduser`.
+2. Clone SDPO into `/workspace/SDPO`.
+3. Install SDPO from that checkout with `pip install -e . --no-deps`.
+
+The repo includes a helper script for this:
+
+```bash
+bootstrap-sdpo.sh
+```
+
+Defaults:
+
+- `SDPO_DIR=/workspace/SDPO`
+- `SDPO_REPO=https://github.com/lasgroup/SDPO.git`
+- `SDPO_REF=main`
+- `INSTALL_SDPO_REQUIREMENTS=false`
+
+If you want the script to also install SDPO's pinned `requirements.txt`, run:
+
+```bash
+INSTALL_SDPO_REQUIREMENTS=true bootstrap-sdpo.sh
+```
+
+This image is aimed at non-Blackwell, single-node NVIDIA RunPod usage with vLLM. Running actual SDPO experiments, choosing the model, and preparing datasets are intentionally left to the workspace on the Pod.
 
 ## Local build
 
@@ -47,6 +79,8 @@ You can still force it explicitly:
 ```bash
 TEST_PLATFORM=linux/amd64 ./scripts/smoke-test.sh runpod-verl:dev
 ```
+
+The smoke test validates container/SSH health and host tools (`git`, `wget`); it does not try to import SDPO or `verl`.
 
 ## GitHub Actions (CI)
 
@@ -84,6 +118,8 @@ Use your pushed image (for now `docker.io/sparkkkkk/runpod-verl:latest`), then s
 - Container disk and GPU as needed for training
 - Env var for key injection: `SSH_AUTHORIZED_KEYS=<your-public-key>`
 - Optional overrides: `SSH_USER`, `SSH_UID`, `SSH_GID`, `SSH_PORT`
+
+For SDPO, clone the repo into `/workspace/SDPO` after the Pod starts and install from the workspace checkout rather than rebuilding the image for every SDPO code change.
 
 ## Security defaults
 

@@ -1,6 +1,6 @@
 # Runpod usage notes (opinionated)
 
-This template is opinionated and primarily intended for personal use. It assumes:
+This template is opinionated and primarily intended for personal use. The current target is a generic SDPO-capable RunPod image for single-node NVIDIA pods with a workspace checkout, not a self-contained SDPO image. It assumes:
 
 - You want SSH access for development.
 - You want a non-root SSH user by default.
@@ -34,6 +34,15 @@ These are optional. If unset, no passwords are initialized.
 ## Ports
 
 Expose TCP port `22` for SSH.
+
+## SDPO usage
+
+- The image does not include the SDPO repo itself.
+- Clone SDPO into `/workspace/SDPO` on the Pod.
+- Install it from the checkout with `pip install -e . --no-deps`, or run `bootstrap-sdpo.sh` to automate that step.
+- If you want the helper to install SDPO's pinned Python requirements too, run it with `INSTALL_SDPO_REQUIREMENTS=true`.
+
+This is intended for non-Blackwell NVIDIA RunPod usage with vLLM on a single node. Experiment launch, dataset setup, and model selection are expected to happen manually in `/workspace`.
 
 ## Reminder
 
