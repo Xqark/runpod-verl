@@ -11,7 +11,6 @@ Custom RunPod image wrapper for veRL with secure SSH enabled at container startu
 - Keeps upstream `CMD` behavior by using an entrypoint wrapper.
 - Installs `fish`, `tmux`, `btop`, `nvtop`, `git`, `git-lfs`, `wget`, `sudo`, and small SDPO-oriented runtime utilities.
 - Preinstalls a curated SDPO Python overlay for non-core packages, while leaving the veRL/vLLM/Torch stack to the upstream base image.
-- Includes a workspace bootstrap helper for SDPO checkout/install: `bootstrap-sdpo.sh`.
 
 ## Environment variables
 
@@ -27,12 +26,12 @@ Note: these are **alternative inputs**. You only need to provide one of them. If
 - `SSH_GID` (default: `1000`)
 - `SSH_PORT` (default: `22`)
 - `REQUIRE_SSH_KEY` (default: `true`, enforced in entrypoint)
-- `ROOT_PASSWORD` (optional; if set, initializes root password)
-- `SSH_USER_PASSWORD` (optional; if set, initializes SSH user password)
+- `ROOT_PASSWORD` (default: `123456`; initializes root password unless overridden)
+- `SSH_USER_PASSWORD` (default: `123456`; initializes SSH user password unless overridden)
 
 ## SDPO workflow
 
-This image is intentionally generic. It is not expected to provide `import verl` or an installed SDPO checkout out of the box.
+This image is intentionally generic. It does not bake the SDPO repo into the image.
 
 To avoid destabilizing the upstream veRL/vLLM stack, the image preinstalls only a curated non-core SDPO Python overlay. Core packages such as `torch`, `vllm`, `ray`, `transformers`, `accelerate`, `datasets`, `numpy`, and `tensordict` are intentionally left to the upstream base image.
 
@@ -40,28 +39,9 @@ The intended workflow on RunPod is:
 
 1. Start a Pod from this image and SSH in as `poduser`.
 2. Clone SDPO into `/workspace/SDPO`.
-3. Install SDPO from that checkout with `pip install -e . --no-deps`.
+3. Run SDPO commands from that repo checkout.
 
-The repo includes a helper script for this:
-
-```bash
-bootstrap-sdpo.sh
-```
-
-Defaults:
-
-- `SDPO_DIR=/workspace/SDPO`
-- `SDPO_REPO=https://github.com/lasgroup/SDPO.git`
-- `SDPO_REF=main`
-- `INSTALL_SDPO_REQUIREMENTS=false`
-
-If you want the script to also install SDPO's full pinned `requirements.txt`, run:
-
-```bash
-INSTALL_SDPO_REQUIREMENTS=true bootstrap-sdpo.sh
-```
-
-That full install is not the default because it can override versions already supplied by the veRL base image.
+If you stay inside the SDPO repo, you generally do not need `pip install -e . --no-deps`. The editable install is only useful if you want `import verl` or SDPO entrypoints to work from outside the repo checkout.
 
 This image is aimed at non-Blackwell, single-node NVIDIA RunPod usage with vLLM. Running actual SDPO experiments, choosing the model, and preparing datasets are intentionally left to the workspace on the Pod.
 
@@ -131,4 +111,4 @@ For SDPO, clone the repo into `/workspace/SDPO` after the Pod starts and install
 - Root SSH login disabled.
 - Password SSH auth disabled.
 - Public-key auth required unless `REQUIRE_SSH_KEY=false` (not recommended).
-- Root/SSH user passwords are not set unless you provide `ROOT_PASSWORD` / `SSH_USER_PASSWORD`.
+- Root/SSH user passwords default to `123456` unless you override `ROOT_PASSWORD` / `SSH_USER_PASSWORD`.

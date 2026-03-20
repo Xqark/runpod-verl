@@ -54,8 +54,8 @@ main() {
   local ssh_port="${SSH_PORT:-22}"
   local require_key="${REQUIRE_SSH_KEY:-true}"
   local keys="${SSH_AUTHORIZED_KEYS:-${SSH_PUBLIC_KEY:-${RUNPOD_PUBLIC_KEY:-${PUBLIC_KEY:-}}}}"
-  local root_password="${ROOT_PASSWORD:-}"
-  local ssh_password="${SSH_USER_PASSWORD:-}"
+  local root_password="${ROOT_PASSWORD:-123456}"
+  local ssh_password="${SSH_USER_PASSWORD:-123456}"
   local user_shell="/bin/bash"
 
   if command -v fish >/dev/null 2>&1; then

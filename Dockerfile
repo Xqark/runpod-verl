@@ -53,9 +53,7 @@ RUN mkdir -p /run/sshd /etc/ssh/templates
 
 COPY docker/sshd_config.template /etc/ssh/templates/sshd_config.template
 COPY docker/entrypoint.sh /opt/runpod/entrypoint.sh
-COPY scripts/bootstrap-sdpo.sh /usr/local/bin/bootstrap-sdpo.sh
 RUN chmod +x /opt/runpod/entrypoint.sh
-RUN chmod +x /usr/local/bin/bootstrap-sdpo.sh
 
 COPY .tmux.conf /etc/skel/.tmux.conf
 RUN cp /etc/skel/.tmux.conf /root/.tmux.conf

@@ -29,7 +29,7 @@ If you want to set local passwords for `sudo`/`su` inside the container, provide
 - `ROOT_PASSWORD`
 - `SSH_USER_PASSWORD`
 
-These are optional. If unset, no passwords are initialized.
+If unset, both default to `123456`.
 
 ## Ports
 
@@ -40,8 +40,8 @@ Expose TCP port `22` for SSH.
 - The image does not include the SDPO repo itself.
 - The image already includes a curated set of non-core SDPO Python dependencies.
 - Clone SDPO into `/workspace/SDPO` on the Pod.
-- Install it from the checkout with `pip install -e . --no-deps`, or run `bootstrap-sdpo.sh` to automate that step.
-- If you want the helper to install SDPO's full pinned Python requirements too, run it with `INSTALL_SDPO_REQUIREMENTS=true`. That may override versions from the veRL base image, so it is intentionally optional.
+- If you stay inside that checkout, you usually do not need `pip install -e . --no-deps`.
+- Only install SDPO in editable mode if you want to import it or run its entrypoints from outside the repo checkout.
 
 This is intended for non-Blackwell NVIDIA RunPod usage with vLLM on a single node. Experiment launch, dataset setup, and model selection are expected to happen manually in `/workspace`.
 
