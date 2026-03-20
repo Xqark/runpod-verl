@@ -10,6 +10,7 @@ Custom RunPod image wrapper for veRL with secure SSH enabled at container startu
 - Enforces key-based SSH auth by default.
 - Keeps upstream `CMD` behavior by using an entrypoint wrapper.
 - Installs `fish`, `tmux`, `btop`, `nvtop`, `git`, `git-lfs`, `wget`, `sudo`, and small SDPO-oriented runtime utilities.
+- Preinstalls a curated SDPO Python overlay for non-core packages, while leaving the veRL/vLLM/Torch stack to the upstream base image.
 - Includes a workspace bootstrap helper for SDPO checkout/install: `bootstrap-sdpo.sh`.
 
 ## Environment variables
@@ -33,6 +34,8 @@ Note: these are **alternative inputs**. You only need to provide one of them. If
 
 This image is intentionally generic. It is not expected to provide `import verl` or an installed SDPO checkout out of the box.
 
+To avoid destabilizing the upstream veRL/vLLM stack, the image preinstalls only a curated non-core SDPO Python overlay. Core packages such as `torch`, `vllm`, `ray`, `transformers`, `accelerate`, `datasets`, `numpy`, and `tensordict` are intentionally left to the upstream base image.
+
 The intended workflow on RunPod is:
 
 1. Start a Pod from this image and SSH in as `poduser`.
@@ -52,11 +55,13 @@ Defaults:
 - `SDPO_REF=main`
 - `INSTALL_SDPO_REQUIREMENTS=false`
 
-If you want the script to also install SDPO's pinned `requirements.txt`, run:
+If you want the script to also install SDPO's full pinned `requirements.txt`, run:
 
 ```bash
 INSTALL_SDPO_REQUIREMENTS=true bootstrap-sdpo.sh
 ```
+
+That full install is not the default because it can override versions already supplied by the veRL base image.
 
 This image is aimed at non-Blackwell, single-node NVIDIA RunPod usage with vLLM. Running actual SDPO experiments, choosing the model, and preparing datasets are intentionally left to the workspace on the Pod.
 

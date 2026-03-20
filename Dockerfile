@@ -45,6 +45,10 @@ RUN git lfs install --system
 
 RUN python -m pip install --no-cache-dir --upgrade pip
 
+COPY requirements/sdpo-overlay.txt /tmp/requirements/sdpo-overlay.txt
+RUN python -m pip install --no-cache-dir --no-deps -r /tmp/requirements/sdpo-overlay.txt && \
+    rm -rf /tmp/requirements
+
 RUN mkdir -p /run/sshd /etc/ssh/templates
 
 COPY docker/sshd_config.template /etc/ssh/templates/sshd_config.template

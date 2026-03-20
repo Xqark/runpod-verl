@@ -25,6 +25,7 @@ python -m pip install --no-deps -e .
 
 if [[ "${INSTALL_SDPO_REQUIREMENTS}" == "true" ]]; then
   echo "Installing SDPO pinned Python requirements..."
+  echo "Warning: this may override versions already provided by the veRL base image." >&2
   python -m pip install -r requirements.txt
 fi
 

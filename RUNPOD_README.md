@@ -38,9 +38,10 @@ Expose TCP port `22` for SSH.
 ## SDPO usage
 
 - The image does not include the SDPO repo itself.
+- The image already includes a curated set of non-core SDPO Python dependencies.
 - Clone SDPO into `/workspace/SDPO` on the Pod.
 - Install it from the checkout with `pip install -e . --no-deps`, or run `bootstrap-sdpo.sh` to automate that step.
-- If you want the helper to install SDPO's pinned Python requirements too, run it with `INSTALL_SDPO_REQUIREMENTS=true`.
+- If you want the helper to install SDPO's full pinned Python requirements too, run it with `INSTALL_SDPO_REQUIREMENTS=true`. That may override versions from the veRL base image, so it is intentionally optional.
 
 This is intended for non-Blackwell NVIDIA RunPod usage with vLLM on a single node. Experiment launch, dataset setup, and model selection are expected to happen manually in `/workspace`.
 
