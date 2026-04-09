@@ -14,27 +14,15 @@ write_shell_env() {
   mkdir -p /etc/profile.d /etc/fish/conf.d
   cat > /etc/profile.d/codex.sh <<EOF
 export PATH="${home_dir}/.local/bin:\$PATH"
-export LANG="${LANG:-en_US.UTF-8}"
-export LC_ALL="${LC_ALL:-en_US.UTF-8}"
-export LANGUAGE="${LANGUAGE:-en_US:en}"
 export CODEX_HOME="${codex_home}"
 export CODEX_SQLITE_HOME="${codex_sqlite_home}"
 export CLAUDE_CONFIG_DIR="${claude_config_dir}"
-if ! infocmp "\${TERM:-xterm-256color}" >/dev/null 2>&1; then
-  export TERM="xterm-256color"
-fi
 EOF
   cat > /etc/fish/conf.d/codex.fish <<EOF
 fish_add_path -g "${home_dir}/.local/bin"
-set -gx LANG "${LANG:-en_US.UTF-8}"
-set -gx LC_ALL "${LC_ALL:-en_US.UTF-8}"
-set -gx LANGUAGE "${LANGUAGE:-en_US:en}"
 set -gx CODEX_HOME "${codex_home}"
 set -gx CODEX_SQLITE_HOME "${codex_sqlite_home}"
 set -gx CLAUDE_CONFIG_DIR "${claude_config_dir}"
-if not infocmp "\$TERM" >/dev/null 2>&1
-    set -gx TERM xterm-256color
-end
 EOF
 }
 
@@ -203,13 +191,7 @@ main() {
   export CODEX_HOME="${codex_home}"
   export CODEX_SQLITE_HOME="${codex_sqlite_home}"
   export CLAUDE_CONFIG_DIR="${claude_config_dir}"
-  export LANG="${LANG:-en_US.UTF-8}"
-  export LC_ALL="${LC_ALL:-en_US.UTF-8}"
-  export LANGUAGE="${LANGUAGE:-en_US:en}"
   export PATH="${home_dir}/.local/bin:${PATH}"
-  if ! infocmp "${TERM:-xterm-256color}" >/dev/null 2>&1; then
-    export TERM="xterm-256color"
-  fi
   install_claude_for_user "${ssh_user}" "${home_dir}"
 
   if [[ "$#" -eq 0 ]]; then
