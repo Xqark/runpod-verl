@@ -4,12 +4,12 @@ Custom RunPod image wrapper for veRL with secure SSH enabled at container startu
 
 ## What this adds on top of the official veRL image
 
-- Starts from the official veRL image (`VERL_BASE_IMAGE`, default `verlai/verl:app-verl0.5-vllm0.10.0-mcore0.13.0-te2.2`).
+- Starts from the official veRL image (`VERL_BASE_IMAGE`, default `verlai/verl:vllm011.latest`).
 - Installs and runs OpenSSH server.
 - Creates/uses a non-root SSH user (`poduser` by default).
 - Enforces key-based SSH auth by default.
 - Keeps upstream `CMD` behavior by using an entrypoint wrapper.
-- Installs `fish`, `tmux`, `btop`, `nvtop`, `git`, `git-lfs`, `wget`, `sudo`, and small SDPO-oriented runtime utilities.
+- Installs `fish`, `tmux`, `btop`, `nvtop`, `git`, `git-lfs`, `rclone`, `wget`, `sudo`, and small SDPO-oriented runtime utilities.
 - Preinstalls a curated SDPO Python overlay for non-core packages, while leaving the veRL/vLLM/Torch stack to the upstream base image.
 
 ## Environment variables
@@ -49,7 +49,7 @@ This image is aimed at non-Blackwell, single-node NVIDIA RunPod usage with vLLM.
 
 ```bash
 docker build -t runpod-verl:dev \
-  --build-arg VERL_BASE_IMAGE=verlai/verl:app-verl0.5-vllm0.10.0-mcore0.13.0-te2.2 .
+  --build-arg VERL_BASE_IMAGE=verlai/verl:vllm011.latest .
 ```
 
 ## Local smoke test
