@@ -53,6 +53,10 @@ RUN npm config delete //registry.npmjs.org/:_authToken || true && \
 
 RUN git lfs install --system
 
+RUN curl -fL "https://github.com/zellij-org/zellij/releases/latest/download/zellij-no-web-x86_64-unknown-linux-musl.tar.gz" \
+    | tar -xz -C /usr/local/bin zellij && \
+    chmod +x /usr/local/bin/zellij
+
 RUN python -m pip install --no-cache-dir --upgrade pip
 
 COPY requirements/sdpo-overlay.txt /tmp/requirements/sdpo-overlay.txt

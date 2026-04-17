@@ -35,6 +35,7 @@ sleep 3
 
 docker exec "${CONTAINER_ID}" bash -lc 'command -v git >/dev/null'
 docker exec "${CONTAINER_ID}" bash -lc 'command -v wget >/dev/null'
+docker exec "${CONTAINER_ID}" bash -lc 'command -v zellij >/dev/null'
 docker exec "${CONTAINER_ID}" bash -lc 'sshd -t'
 docker exec "${CONTAINER_ID}" bash -lc 'pgrep -x sshd >/dev/null'
 docker exec "${CONTAINER_ID}" bash -lc 'test -s /home/poduser/.ssh/authorized_keys'

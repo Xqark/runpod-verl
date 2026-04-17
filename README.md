@@ -9,7 +9,7 @@ Custom RunPod image wrapper for veRL with secure SSH enabled at container startu
 - Creates/uses a non-root SSH user (`poduser` by default).
 - Enforces key-based SSH auth by default.
 - Keeps upstream `CMD` behavior by using an entrypoint wrapper.
-- Installs `fish`, `tmux`, `btop`, `nvtop`, `git`, `git-lfs`, `rclone`, `wget`, `sudo`, and small SDPO-oriented runtime utilities.
+- Installs `fish`, `tmux`, `zellij`, `btop`, `nvtop`, `git`, `git-lfs`, `rclone`, `wget`, `sudo`, and small SDPO-oriented runtime utilities.
 - Preinstalls a curated SDPO Python overlay for non-core packages, while leaving the veRL/vLLM/Torch stack to the upstream base image.
 
 ## Environment variables
@@ -65,7 +65,7 @@ You can still force it explicitly:
 TEST_PLATFORM=linux/amd64 ./scripts/smoke-test.sh runpod-verl:dev
 ```
 
-The smoke test validates container/SSH health and host tools (`git`, `wget`); it does not try to import SDPO or `verl`.
+The smoke test validates container/SSH health and host tools (`git`, `wget`, `zellij`); it does not try to import SDPO or `verl`.
 
 ## GitHub Actions (CI)
 
